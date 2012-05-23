@@ -25,8 +25,9 @@
     <bean id="rabbitAdmin" class="org.springframework.amqp.rabbit.core.RabbitAdmin">
         <constructor-arg ref="rabbitConnectionFactory" />
     </bean>
+ -->
 
-    <bean id="rabbitConnectionFactory" class="org.springframework.amqp.rabbit.connection.SingleConnectionFactory"
+    <bean id="rabbitConnectionFactory" class="org.springframework.amqp.rabbit.connection.ConnectionFactory"
         p:username="guest" p:password="guest" p:virtualHost="/" p:port="5672">
         <constructor-arg value="127.0.0.1" />
     </bean>
@@ -44,19 +45,10 @@
 
     <bean id="messageListener" class="com.test.MessageHandler" />
 
-
-    <bean id="mbeanExporter" class="org.springframework.jmx.export.MBeanExporter" lazy-init="false">
-        <property name="beans">
-            <map>
-                <entry key="ndpar:name=Admin" value-ref="rabbitBrokerAdmin" />
-                <entry key="ndpar:name=Sender" value-ref="messageSender" />
-            </map>
-        </property>
-    </bean>
-
+<!-- 
     <bean id="rabbitBrokerAdmin" class="org.springframework.amqp.rabbit.admin.RabbitBrokerAdmin" autowire-candidate="false">
         <constructor-arg ref="rabbitConnectionFactory" />
     </bean>
-    
      -->
+
 </beans>
