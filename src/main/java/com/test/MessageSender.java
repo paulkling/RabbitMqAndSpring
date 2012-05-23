@@ -11,7 +11,7 @@ public class MessageSender {
 
     @ManagedOperation
     public void send(String text) {
-        send("NDPAR.SPRING.JAVA", text);
+        send("TEST.SPRING.JAVA", text);
     }
 
     @ManagedOperation

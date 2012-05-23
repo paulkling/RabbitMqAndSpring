@@ -7,7 +7,7 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
     <context:annotation-config />
-
+<!-- 
     <bean id="topic" class="org.springframework.amqp.core.TopicExchange">
         <constructor-arg value="test.topic" />
     </bean>
@@ -57,4 +57,6 @@
     <bean id="rabbitBrokerAdmin" class="org.springframework.amqp.rabbit.admin.RabbitBrokerAdmin" autowire-candidate="false">
         <constructor-arg ref="rabbitConnectionFactory" />
     </bean>
+    
+     -->
 </beans>
