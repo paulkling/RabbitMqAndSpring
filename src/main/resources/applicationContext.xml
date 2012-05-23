@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+    <context:annotation-config />
+
+    <bean id="topic" class="org.springframework.amqp.core.TopicExchange">
+        <constructor-arg value="test.topic" />
+    </bean>
+
+    <bean id="queue" class="org.springframework.amqp.core.Queue">
+        <constructor-arg value="test.spring.client" />
+    </bean>
+
+    <bean id="binding" class="org.springframework.amqp.core.Binding">
+        <constructor-arg index="0" ref="queue" />
+        <constructor-arg index="1" ref="topic" />
+        <constructor-arg index="2" value="TEST.SPRING.#" />
+    </bean>
+
+    <bean id="rabbitAdmin" class="org.springframework.amqp.rabbit.core.RabbitAdmin">
+        <constructor-arg ref="rabbitConnectionFactory" />
+    </bean>
+
+    <bean id="rabbitConnectionFactory" class="org.springframework.amqp.rabbit.connection.SingleConnectionFactory"
+        p:username="guest" p:password="guest" p:virtualHost="/" p:port="5672">
+        <constructor-arg value="127.0.0.1" />
+    </bean>
+
+    <bean id="rabbitTemplate" class="org.springframework.amqp.rabbit.core.RabbitTemplate"
+        p:connectionFactory-ref="rabbitConnectionFactory"
+        p:exchange="test.topic" />
+
+    <bean id="messageSender" class="com.test.MessageSender" />
+
+    <bean class="org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer"
+        p:connectionFactory-ref="rabbitConnectionFactory"
+        p:queueName="test.spring.client"
+        p:messageListener-ref="messageListener" />
+
+    <bean id="messageListener" class="com.test.MessageHandler" />
+
+
+    <bean id="mbeanExporter" class="org.springframework.jmx.export.MBeanExporter" lazy-init="false">
+        <property name="beans">
+            <map>
+                <entry key="ndpar:name=Admin" value-ref="rabbitBrokerAdmin" />
+                <entry key="ndpar:name=Sender" value-ref="messageSender" />
+            </map>
+        </property>
+    </bean>
+
+    <bean id="rabbitBrokerAdmin" class="org.springframework.amqp.rabbit.admin.RabbitBrokerAdmin" autowire-candidate="false">
+        <constructor-arg ref="rabbitConnectionFactory" />
+    </bean>
+</beans>
